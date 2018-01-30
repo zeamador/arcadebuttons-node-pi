@@ -5,6 +5,7 @@
 </head>
 
 <body bgcolor="green">
+<!--
 <p align = "center">
 <table border=0 width="80%" height="60%">
 <tr><td></td><td class = "up" id="up" onclick="clickHandler('up');"></tr>
@@ -13,15 +14,13 @@
 <tr><td></td><td class="up" id="down" onclick="clickHandler('down');" ontouchstart="clickHandler('down');"></td><td></td><td></td><td class="up" id="b4" onclick="clickHandler('b4');" ontouchstart="clickHandler('b4');"></tr>
 </table>
 </p>
+-->
 
-<style>
-.up {background-color: lightgrey}
-.down {background-color: red}
-.clicked {background-color: blue}
-</style>
+<canvas id="canvas" width="640" height="480"></canvas>
 
-<script src="/socket.io/socket.io.js"></script>
+<!--<script src="/socket.io/socket.io.js"></script>-->
 <script>
+
   var socket = io();
 
   var clickHandler = function(val) {
@@ -32,47 +31,115 @@
     node.className = val;
   };
 
+  var right, left, up, down, b1, b2, b3, b4;
+  right = left = up = down = b1 = b2 = b3 = b4 = 0;
+
+  var onstyle = '#FFA500';
+  var offstyle = '#BBBBBB';
+
   socket.on('right', function(data) {
-    var d = document.getElementById("right");
-    toggle(d, data.v);
+    right = data.v;
   });
   socket.on('left', function(data) {
-    var d = document.getElementById("left");
-    toggle(d, data.v);
+    left = data.v;
   });
   socket.on('up', function(data) {
-    var d = document.getElementById("up");
-    toggle(d, data.v);
+    up = data.v;
   });
   socket.on('down', function(data) {
-    var d = document.getElementById("down");
-    toggle(d, data.v);
+    down = data.v;
   });
   socket.on('b1', function(data) {
-    var d = document.getElementById("b1");
-    toggle(d, data.v);
+    b1 = data.v;
   });
   socket.on('b2', function(data) {
-    var d = document.getElementById("b2");
-    toggle(d, data.v);
+    b2 = data.v;
   });
   socket.on('b3', function(data) {
-    var d = document.getElementById("b3");
-    toggle(d, data.v);
+    b3 = data.v;
   });
   socket.on('b4', function(data) {
-    var d = document.getElementById("b4");
-    toggle(d, data.v);
+    b4 = data.v;
   });
 
-  document.addEventListener("keydown", keyDownTextField, false);
+  function draw() {
+    var ctx = document.getElementById('canvas').getContext('2d');
 
-  function keyDownTextField(e) {
-    var keyCode = e.keyCode;
-    // If the user hits space, hit b2
-    if(keyCode==32) {
-      clickHandler('b2');
-    }
+    // joystick center
+    ctx.beginPath();
+    ctx.arc(120, 120, 45, 0, Math.PI * 2, 0);
+    ctx.fill();
+
+
+    // left
+    ctx.strokeStyle = (left) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.moveTo(30, 120);
+    ctx.lineTo(70, 80);
+    ctx.lineTo(70, 160);
+    ctx.fill();
+
+    // right
+    ctx.strokeStyle = (right) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.moveTo(170, 80);
+    ctx.lineTo(170, 160);
+    ctx.lineTo(210, 120);
+    ctx.fill();
+
+    // up
+    ctx.strokeStyle = (up) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.moveTo(80, 70);
+    ctx.lineTo(160, 70);
+    ctx.lineTo(120, 30);
+    ctx.fill();
+
+    // down
+    ctx.strokeStyle = (down) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.moveTo(80, 170);
+    ctx.lineTo(160, 170);
+    ctx.lineTo(120, 210);
+    ctx.fill();
+
+    // b1
+    ctx.strokeStyle = (b1) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.arc(270, 80, 35, 0, Math.PI * 2, 0);
+    ctx.fill();
+
+    // b2
+    ctx.strokeStyle = (b2) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.arc(340, 40, 35, 0, Math.PI * 2, 0);
+    ctx.fill();
+
+    // b3
+    ctx.strokeStyle = (b3) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.arc(420, 50, 35, 0, Math.PI * 2, 0);
+    ctx.fill();
+
+    // b4
+    ctx.strokeStyle = (b4) ? onStyle : offStyle;
+    ctx.beginPath();
+    ctx.arc(260, 170, 35, 0, Math.PI * 2, 0);
+    ctx.fill();
+
+/*
+    // b5
+    ctx.beginPath();
+    ctx.arc(332, 130, 35, 0, Math.PI * 2, 0);
+    ctx.fill();
+    
+    // b6
+    ctx.beginPath();
+    ctx.arc(410, 140, 35, 0, Math.PI * 2, 0);
+    ctx.fill();
+    */
   }
+  draw();
 </script>
+</body>
 </html>
